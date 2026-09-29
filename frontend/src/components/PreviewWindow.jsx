@@ -1,6 +1,6 @@
 export default function PreviewWindow({ executedCode }) {
-    const generateOutput = (code) => {
-        return `
+  const generateOutput = (code) => {
+    return `
       <html>
         <body>
           <!-- 1. קודם כל: סקריפט החטיפה שמכין את הקרקע -->
@@ -19,26 +19,25 @@ export default function PreviewWindow({ executedCode }) {
             }
           </script>
           
-          <!-- 2. ורק עכשיו: הקוד שהלקוח כתב! -->
           ${code}
         </body>
       </html>
     `;
-    };
+  };
 
-    return (
-        <div className="w-full h-full bg-white flex flex-col">
-            <div className="bg-gray-200 text-xs font-bold text-gray-600 p-2 border-b uppercase tracking-wider">
-                Preview & Console
-            </div>
-            <div className="flex-1">
-                <iframe
-                    title="preview"
-                    srcDoc={generateOutput(executedCode)}
-                    className="w-full h-full border-none"
-                    sandbox="allow-scripts"
-                />
-            </div>
-        </div>
-    );
+  return (
+    <div className="w-full h-full bg-white flex flex-col">
+      <div className="bg-gray-200 text-xs font-bold text-gray-600 p-2 border-b uppercase tracking-wider">
+        Preview & Console
+      </div>
+      <div className="flex-1">
+        <iframe
+          title="preview"
+          srcDoc={generateOutput(executedCode)}
+          className="w-full h-full border-none"
+          sandbox="allow-scripts"
+        />
+      </div>
+    </div>
+  );
 }
