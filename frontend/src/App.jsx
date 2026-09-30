@@ -3,6 +3,9 @@ import Header from './components/Header';
 import CodeEditor from './components/CodeEditor';
 import PreviewWindow from './components/PreviewWindow';
 
+import { io } from "socket.io-client";
+const socket = io("http://localhost:3000");
+
 function App() {
   const [editorCode, setEditorCode] = useState('<h1 style="color: blue;">Hello DevSync</h1>\n<script>\n  console.log("Welcome to DevSync!");\n</script>');
 
