@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import CodeEditor from './components/CodeEditor';
 import PreviewWindow from './components/PreviewWindow';
@@ -12,6 +12,15 @@ function App() {
 
   // המשתנה שיעודכן רק כשהמשתמש לוחץ על Run
   const [executedCode, setExecutedCode] = useState(editorCode);
+
+  useEffect(() => {
+    socket.on('receive-code', (newCode) => {
+      setEditorCode(newCode);
+    });
+    return () => {
+      socket.off('receive-code');
+    }
+  }, []);
 
   const handleRun = () => {
     setExecutedCode(editorCode);
