@@ -16,6 +16,11 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
     console.log(`משתמש חדש התחבר לאתר! מזהה: ${socket.id}`);
+
+    socket.on('code-change', (newCode) => {
+        socket.broadcast.emit('receive-code', newCode);
+    });
+
     socket.on('disconnect', () => {
         console.log(`המשתמש עזב את האתר: ${socket.id}`);
     });
