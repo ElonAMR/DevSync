@@ -15,14 +15,21 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    console.log(`משתמש חדש התחבר לאתר! מזהה: ${socket.id}`);
+    console.log(`a new user has connected to the site! id: ${socket.id}`);
 
-    socket.on('code-change', (newCode) => {
-        socket.broadcast.emit('receive-code', newCode);
+    // 1. כשהמשתמש מבקש להיכנס לחדר הספציפי
+    socket.on('join-room', (roomId) => {
+        socket.join(roomId);
+        console.log(`user id: ${socket.id} joined room: ${roomId}`);
+    });
+
+    // 2. כשהמשתמש מקליד, הוא שולח לנו חבילה (data) שכוללת גם את הקוד וגם את שם החדר
+    socket.on('code-change', (data) => {
+        socket.to(data.roomId).emit('receive-code', data.code);
     });
 
     socket.on('disconnect', () => {
-        console.log(`המשתמש עזב את האתר: ${socket.id}`);
+        console.log(`user disconnected: ${socket.id}`);
     });
 });
 
