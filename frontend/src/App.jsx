@@ -1,62 +1,19 @@
-import { useState, useEffect } from 'react';
-import Header from './components/Header';
-import CodeEditor from './components/CodeEditor';
-import PreviewWindow from './components/PreviewWindow';
-
-import { io } from "socket.io-client";
-const socket = io("http://localhost:3000");
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import EditorPage from './pages/EditorPage';
 
 function App() {
-  // מצב התחלתי טיוטה של עורך הקוד
-  const [editorCode, setEditorCode] = useState('<h1 style="color: blue;">Hello DevSync</h1>\n<script>\n  console.log("Welcome to DevSync!");\n</script>');
-
-  // המשתנה שיעודכן רק כשהמשתמש לוחץ על Run
-  const [executedCode, setExecutedCode] = useState(editorCode);
-
-  useEffect(() => {
-    socket.on('receive-code', (newCode) => {
-      setEditorCode(newCode);
-    });
-    return () => {
-      socket.off('receive-code');
-    }
-  }, []);
-
-  const handleRun = () => {
-    setExecutedCode(editorCode);
-  };
-
-  const handleEditorChange = (newValue) => {
-    setEditorCode(newValue);
-    socket.emit('code-change', newValue);
-  }
-
-
-
   return (
-    <div className="flex flex-col h-screen bg-gray-900 overflow-hidden">
+    <BrowserRouter>
+      <Routes>
+        {/* כשהלקוח נכנס לכתובת הראשית הרגילה - הראה לו את מסך הבית */}
+        <Route path="/" element={<Home />} />
 
-      {/* 1. הרכיב העליון */}
-      <Header onRun={handleRun} />
-
-      {/* 2. אזור העבודה (מסודר בשורה: שמאל וימין) */}
-      <div className="flex-1 flex flex-row">
-
-        {/* צד שמאל: עורך קוד */}
-        <div className="w-1/2 border-r border-gray-700">
-          <CodeEditor code={editorCode} onChange={handleEditorChange} />
-        </div>
-
-        {/* צד ימין: חלון התוצאה */}
-        <div className="w-1/2">
-          <PreviewWindow executedCode={executedCode} />
-        </div>
-
-      </div>
-
-      {/* 3. בעתיד: נוסיף פה את רכיב ה-Chat המרחף */}
-
-    </div>
+        {/* כשהלקוח נכנס לכתובת עם המילה רום וקוד - הראה לו את מסך העורך */}
+        {/* המילה :roomId היא משתנה דינמי שנוכל לקרוא בהמשך */}
+        <Route path="/room/:roomId" element={<EditorPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
