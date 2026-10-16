@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Header from '../components/Header';
 import CodeEditor from '../components/CodeEditor';
 import PreviewWindow from '../components/PreviewWindow';
+import RoomForm from '../components/RoomForm';
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:3000');
@@ -11,20 +12,24 @@ export default function EditorPage() {
 
     const { roomId } = useParams();
 
+    const [username, setUsername] = useState(localStorage.getItem('devsync_user') || '');
+
     const [editorCode, setEditorCode] = useState('<h1 style="color: blue;">Hello DevSync</h1>\n<script>\n  console.log("Welcome to DevSync!");\n</script>');
     const [executedCode, setExecutedCode] = useState(editorCode);
 
     useEffect(() => {
-        // ברגע שהמשתמש נכנס לחדר - הוא מצטרף לחדר הזה בשרת
-        socket.emit('join-room', roomId);
+        if (!username) return;
+
+        socket.emit('join-room', { roomId, username });
 
         socket.on('receive-code', (newCode) => {
             setEditorCode(newCode);
         });
+
         return () => {
             socket.off('receive-code');
         };
-    }, [roomId]);
+    }, [roomId, username]);
 
     const handleRun = () => {
         setExecutedCode(editorCode);
@@ -34,6 +39,21 @@ export default function EditorPage() {
         setEditorCode(newValue);
         socket.emit('code-change', { roomId: roomId, code: newValue });
     };
+
+    if (!username) {
+        return (
+            <div className="h-screen bg-gray-900 flex flex-col items-center justify-center text-white px-4">
+                <h1 className="text-3xl font-bold mb-4 text-blue-500">Join Room</h1>
+                <p className="text-gray-400 mb-6">Enter your name to join this collaboration session</p>
+                <RoomForm
+                    onSubmit={(name) => {
+                        localStorage.setItem('devsync_user', name);
+                        setUsername(name);
+                    }}
+                />
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-screen bg-gray-900 overflow-hidden">
