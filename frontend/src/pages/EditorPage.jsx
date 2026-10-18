@@ -17,6 +17,9 @@ export default function EditorPage() {
     const [editorCode, setEditorCode] = useState('<h1 style="color: blue;">Hello DevSync</h1>\n<script>\n  console.log("Welcome to DevSync!");\n</script>');
     const [executedCode, setExecutedCode] = useState(editorCode);
 
+    // תא זיכרון חדש לשמירת רשימת המשתתפים בחדר
+    const [users, setUsers] = useState([]);
+
     useEffect(() => {
         if (!username) return;
 
@@ -26,8 +29,13 @@ export default function EditorPage() {
             setEditorCode(newCode);
         });
 
+        socket.on('room-users', (roomUsers) => {
+            setUsers(roomUsers);
+        });
+
         return () => {
             socket.off('receive-code');
+            socket.off('room-users');
         };
     }, [roomId, username]);
 
@@ -57,7 +65,7 @@ export default function EditorPage() {
 
     return (
         <div className="flex flex-col h-screen bg-gray-900 overflow-hidden">
-            <Header onRun={handleRun} />
+            <Header onRun={handleRun} users={users} roomId={roomId} />
             <div className="flex-1 flex flex-row">
                 <div className="w-1/2 border-r border-gray-700">
                     <CodeEditor code={editorCode} onChange={handleEditorChange} />
