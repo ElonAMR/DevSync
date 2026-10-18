@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import { addUserToRoom, removeUserFromRoom } from './roomManager.js';
+import { addUserToRoom, removeUserFromRoom, updateRoomCode } from './roomManager.js';
 
 const app = express();
 app.use(cors());
@@ -15,25 +15,27 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    // 1. כניסה לחדר
+    // כניסה לחדר
     socket.on('join-room', ({ roomId, username }) => {
         socket.join(roomId);
-        socket.roomId = roomId; // שומרים על הסוקט את שם החדר שלו
-
-        // מוסיפים לפנקס ושולחים לכל מי שבחדר את הרשימה המעודכנת
-        const updatedUsers = addUserToRoom(roomId, socket.id, username);
-        io.to(roomId).emit('room-users', updatedUsers);
+        socket.roomId = roomId;
+        const roomData = addUserToRoom(roomId, socket.id, username);
+        // 1. שולחים לכולם בחדר את רשימת המשתמשים המעודכנת
+        io.to(roomId).emit('room-users', roomData.users);
+        // 2. שולחים למשתמש החדש בלבד (ספציפית לו!) את הקוד המעודכן ביותר שקיים כרגע בחדר
+        socket.emit('init-code', roomData.code);
     });
-
-    // 2. סנכרון קוד
+    // סנכרון קוד
     socket.on('code-change', (data) => {
+        // מעדכנים את הקוד בפנקס של השרת
+        updateRoomCode(data.roomId, data.code);
+
+        // משדרים לשאר האנשים בחדר
         socket.to(data.roomId).emit('receive-code', data.code);
     });
-
-    // 3. יציאה מהחדר
+    // עזיבה
     socket.on('disconnect', () => {
         if (socket.roomId) {
-            // מסירים מהפנקס ושולחים למי שנשאר את הרשימה החדשה
             const remainingUsers = removeUserFromRoom(socket.roomId, socket.id);
             io.to(socket.roomId).emit('room-users', remainingUsers);
         }

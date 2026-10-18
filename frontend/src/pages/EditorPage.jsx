@@ -32,10 +32,15 @@ export default function EditorPage() {
         socket.on('room-users', (roomUsers) => {
             setUsers(roomUsers);
         });
+        socket.on('init-code', (initialCode) => {
+            setEditorCode(initialCode);
+            setExecutedCode(initialCode);
+        });
 
         return () => {
             socket.off('receive-code');
             socket.off('room-users');
+            socket.off('init-code');
         };
     }, [roomId, username]);
 
