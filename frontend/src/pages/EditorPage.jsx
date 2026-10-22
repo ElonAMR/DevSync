@@ -5,6 +5,7 @@ import CodeEditor from '../components/CodeEditor';
 import PreviewWindow from '../components/PreviewWindow';
 import RoomForm from '../components/RoomForm';
 import { io } from 'socket.io-client';
+import ChatWidget from '../components/ChatWidget';
 
 const socket = io('http://localhost:3000');
 
@@ -68,6 +69,8 @@ export default function EditorPage() {
         );
     }
 
+    const currentUser = users.find((u) => u.username === username);
+
     return (
         <div className="flex flex-col h-screen bg-gray-900 overflow-hidden">
             <Header onRun={handleRun} users={users} roomId={roomId} />
@@ -79,6 +82,7 @@ export default function EditorPage() {
                     <PreviewWindow executedCode={executedCode} />
                 </div>
             </div>
+            <ChatWidget socket={socket} roomId={roomId} currentUser={currentUser} />
         </div>
     );
 }

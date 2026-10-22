@@ -25,14 +25,21 @@ io.on('connection', (socket) => {
         // 2. שולחים למשתמש החדש בלבד (ספציפית לו!) את הקוד המעודכן ביותר שקיים כרגע בחדר
         socket.emit('init-code', roomData.code);
     });
+
     // סנכרון קוד
     socket.on('code-change', (data) => {
         // מעדכנים את הקוד בפנקס של השרת
         updateRoomCode(data.roomId, data.code);
-
         // משדרים לשאר האנשים בחדר
         socket.to(data.roomId).emit('receive-code', data.code);
     });
+
+    // קליטת הודעת צ'אט והפצתה לכל החברים בחדר
+    socket.on('send-message', (data) => {
+        // data מכיל: { roomId, sender, color, text, time }
+        io.to(data.roomId).emit('receive-message', data);
+    });
+
     // עזיבה
     socket.on('disconnect', () => {
         if (socket.roomId) {
