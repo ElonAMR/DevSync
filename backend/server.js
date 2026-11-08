@@ -19,35 +19,27 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    // כניסה לחדר
-    socket.on('join-room', ({ roomId, username }) => {
+    // 1. כניסה לחדר (הוספנו async ו-await)
+    socket.on('join-room', async ({ roomId, username }) => {
         socket.join(roomId);
         socket.roomId = roomId;
-        const roomData = addUserToRoom(roomId, socket.id, username);
-        // 1. שולחים לכולם בחדר את רשימת המשתמשים המעודכנת
+        const roomData = await addUserToRoom(roomId, socket.id, username);
         io.to(roomId).emit('room-users', roomData.users);
-        // 2. שולחים למשתמש החדש בלבד (ספציפית לו!) את הקוד המעודכן ביותר שקיים כרגע בחדר
         socket.emit('init-code', roomData.code);
     });
-
-    // סנכרון קוד
+    // 2. סנכרון קוד
     socket.on('code-change', (data) => {
-        // מעדכנים את הקוד בפנקס של השרת
         updateRoomCode(data.roomId, data.code);
-        // משדרים לשאר האנשים בחדר
         socket.to(data.roomId).emit('receive-code', data.code);
     });
-
-    // קליטת הודעת צ'אט והפצתה לכל החברים בחדר
+    // 3. שליחת הודעת צ'אט
     socket.on('send-message', (data) => {
-        // data מכיל: { roomId, sender, color, text, time }
         io.to(data.roomId).emit('receive-message', data);
     });
-
-    // עזיבה
-    socket.on('disconnect', () => {
+    // 4. יציאה מהחדר (הוספנו async ו-await)
+    socket.on('disconnect', async () => {
         if (socket.roomId) {
-            const remainingUsers = removeUserFromRoom(socket.roomId, socket.id);
+            const remainingUsers = await removeUserFromRoom(socket.roomId, socket.id);
             io.to(socket.roomId).emit('room-users', remainingUsers);
         }
     });
