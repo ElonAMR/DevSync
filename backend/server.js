@@ -2,7 +2,11 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 import { addUserToRoom, removeUserFromRoom, updateRoomCode } from './roomManager.js';
+
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -49,7 +53,17 @@ io.on('connection', (socket) => {
     });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/devsync';
+mongoose.connect(MONGO_URI)
+    .then(() => {
+        console.log('Connect To MongoDB Sucsses!');
+    })
+    .catch((err) => {
+        console.error('Error Connect To MongoDB:', err.message);
+    });
+
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
