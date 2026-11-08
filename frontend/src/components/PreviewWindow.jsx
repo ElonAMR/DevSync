@@ -3,7 +3,6 @@ export default function PreviewWindow({ executedCode }) {
     return `
       <html>
         <body>
-          <!-- 1. קודם כל: סקריפט החטיפה שמכין את הקרקע -->
           <script>
             const oldLog = console.log;
             console.log = function(...args) {

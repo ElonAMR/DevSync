@@ -19,7 +19,7 @@ const io = new Server(server, {
 });
 
 io.on('connection', (socket) => {
-    // 1. כניסה לחדר (הוספנו async ו-await)
+    //join room 
     socket.on('join-room', async ({ roomId, username }) => {
         socket.join(roomId);
         socket.roomId = roomId;
@@ -27,16 +27,16 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('room-users', roomData.users);
         socket.emit('init-code', roomData.code);
     });
-    // 2. סנכרון קוד
+    //async code
     socket.on('code-change', (data) => {
         updateRoomCode(data.roomId, data.code);
         socket.to(data.roomId).emit('receive-code', data.code);
     });
-    // 3. שליחת הודעת צ'אט
+    //send chat message
     socket.on('send-message', (data) => {
         io.to(data.roomId).emit('receive-message', data);
     });
-    // 4. יציאה מהחדר (הוספנו async ו-await)
+    //disconnect from room (asyncawait)
     socket.on('disconnect', async () => {
         if (socket.roomId) {
             const remainingUsers = await removeUserFromRoom(socket.roomId, socket.id);

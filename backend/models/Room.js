@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-// הגדרת מבנה הנתונים של חדר בבסיס הנתונים
+//definning the data structure of room 
 const roomSchema = new mongoose.Schema({
     roomId: {
         type: String,

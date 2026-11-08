@@ -18,7 +18,6 @@ export default function EditorPage() {
     const [editorCode, setEditorCode] = useState('<h1 style="color: blue;">Hello DevSync</h1>\n<script>\n  console.log("Welcome to DevSync!");\n</script>');
     const [executedCode, setExecutedCode] = useState(editorCode);
 
-    // תא זיכרון חדש לשמירת רשימת המשתתפים בחדר
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
