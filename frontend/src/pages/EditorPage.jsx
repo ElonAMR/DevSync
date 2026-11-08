@@ -7,7 +7,8 @@ import RoomForm from '../components/RoomForm';
 import ChatWidget from '../components/ChatWidget';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000');
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+const socket = io(SERVER_URL);
 
 export default function EditorPage() {
     const { roomId } = useParams();
