@@ -11,27 +11,49 @@ export default function Header({ onRun, users = [] }) {
     };
 
     return (
-        <header className="relative z-10 p-4 bg-gray-800 border-b border-gray-700 shadow-md flex justify-between items-center">
-            <div className="flex items-center gap-6">
-                <h1 className="text-xl font-bold text-white tracking-wide">DevSync</h1>
+        <header className="relative z-10 h-14 bg-zinc-950/80 border-b border-zinc-800/80 backdrop-blur-md px-4 flex justify-between items-center select-none">
+
+            {/* צד שמאל: לוגו ורשימת משתתפים */}
+            <div className="flex items-center gap-5">
+                <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center shadow-sm">
+                        <span className="text-zinc-950 font-black text-xs tracking-tighter">D</span>
+                    </div>
+                    <span className="font-bold text-sm tracking-tight text-white">DevSync</span>
+                </div>
+
+                <div className="h-4 w-[1px] bg-zinc-800" />
+
                 <UserList users={users} />
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
                 <button
                     onClick={handleCopyLink}
-                    className="bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-medium py-2 px-4 rounded transition cursor-pointer"
+                    className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-xs font-medium py-1.5 px-3 rounded-lg transition-all duration-150 flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-sm"
                 >
-                    {copied ? '✓ Copied!' : 'Copy Room Link 🔗'}
+                    {copied ? (
+                        <>
+                            <span className="text-emerald-400">✓</span>
+                            <span className="text-emerald-400 font-semibold">Copied!</span>
+                        </>
+                    ) : (
+                        <>
+                            <span className="text-zinc-400">🔗</span>
+                            <span>Share Link</span>
+                        </>
+                    )}
                 </button>
 
                 <button
                     onClick={onRun}
-                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded transition shadow cursor-pointer"
+                    className="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-semibold text-xs tracking-wide py-1.5 px-4 rounded-lg shadow-sm shadow-emerald-500/20 active:scale-95 transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
                 >
-                    Run Code ▶
+                    <span>Run</span>
+                    <span className="text-[10px]">▶</span>
                 </button>
             </div>
+
         </header>
     );
 }

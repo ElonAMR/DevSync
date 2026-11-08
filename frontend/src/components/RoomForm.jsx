@@ -13,23 +13,28 @@ export default function RoomForm({ initialUsername = '', onSubmit }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-xl shadow-2xl border border-gray-700 w-full max-w-md flex flex-col gap-4">
-            <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="e.g. Elon"
-                    className="w-full bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
+            <div className="flex flex-col gap-2">
+                <label className="text-xs font-medium tracking-wide text-zinc-400 uppercase">
+                    Your Name
+                </label>
+                <div className="relative">
+                    <input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="please enter your name"
+                        className="w-full bg-zinc-950/80 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-100 placeholder-zinc-500 transition-all duration-200 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 shadow-inner"
+                    />
+                </div>
             </div>
 
             <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-lg text-lg transition shadow-lg mt-2 cursor-pointer"
+                className="w-full bg-white hover:bg-zinc-200 text-zinc-950 font-semibold py-3 px-6 rounded-xl text-sm transition-all duration-200 shadow-lg shadow-white/5 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group"
             >
-                Create New Room
+                <span>Create Workspace</span>
+                <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
             </button>
         </form>
     );
