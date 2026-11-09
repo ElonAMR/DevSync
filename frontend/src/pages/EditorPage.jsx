@@ -7,7 +7,7 @@ import RoomForm from '../components/RoomForm';
 import ChatWidget from '../components/ChatWidget';
 import { io } from 'socket.io-client';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || (import.meta.env.PROD ? 'https://devsync-backend-5m2l.onrender.com' : 'http://localhost:3000');
 const socket = io(SERVER_URL);
 
 export default function EditorPage() {
